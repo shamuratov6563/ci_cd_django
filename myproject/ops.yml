@@ -1,0 +1,24 @@
+version: "1"
+pipelines:
+ - name: django-workflow:0.1.5
+   description: django-workflow
+   env:
+     static:
+       - DEBIAN_FRONTEND=noninteractive
+       - ORG=<github_username>
+       - REPO=<github_repo>
+       - REF=main
+   events:
+     - "github:<github_username>/<github_repo>:pull_request.opened"
+     - "github:<github_username>/<github_repo>:pull_request.merged"
+   jobs:
+     - name: django-workflow-build
+       description: django workflow
+       packages:
+         - git
+       steps:
+         - echo "django workflow"
+         - curl -O https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tgz
+         - python3 -m pip install --upgrade pip
+         - pip install -r requirements.txt
+         - docker build -t <image_name> .
